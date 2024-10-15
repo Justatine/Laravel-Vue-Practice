@@ -48,14 +48,15 @@ class PostController extends Controller
         $addPost = Posts::create($validated);
         if (!$addPost) {
             return response()->json([
-                'success'=>false,
+                'success'=>true,
                 'message'=>'Failed to add post'
             ], 204);
         }
 
         return response()->json([
             'success'=>false,
-            'message'=>'Post added'
+            'message'=>'Post added',
+            'data'=>$validated
         ], 200);
     }
 

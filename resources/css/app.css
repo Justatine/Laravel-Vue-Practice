@@ -1,0 +1,8 @@
+.link{
+    margin: 10px;
+}
+
+.link.active{
+    color: rgba(0, 89, 255, 0.712);
+    padding: 0%;
+}
