@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PostResource;
 use App\Models\Posts;
 use Illuminate\Http\Request;
 
@@ -12,19 +13,20 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Posts::orderBy('created_at','DESC')->get();
+        return PostResource::collection(Posts::orderBy('created_at','DESC')->get());
+        // $posts = Posts::orderBy('created_at','DESC')->get();
         
-        if ($posts->isEmpty()) {
-            return response()->json([
-                'success'=>false,
-                'posts'=>$posts
-            ], 204);
-        }
+        // if ($posts->isEmpty()) {
+        //     return response()->json([
+        //         'success'=>false,
+        //         'posts'=>$posts
+        //     ], 204);
+        // }
 
-        return response()->json([
-            'success'=>true,
-            'posts'=>$posts
-        ], 200);
+        // return response()->json([
+        //     'success'=>true,
+        //     'posts'=>$posts
+        // ], 200);
     }
 
     /**
