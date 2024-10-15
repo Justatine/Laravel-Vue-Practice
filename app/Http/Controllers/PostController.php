@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Posts;
 use Illuminate\Http\Request;
@@ -14,19 +15,6 @@ class PostController extends Controller
     public function index()
     {
         return PostResource::collection(Posts::orderBy('created_at','DESC')->get());
-        // $posts = Posts::orderBy('created_at','DESC')->get();
-        
-        // if ($posts->isEmpty()) {
-        //     return response()->json([
-        //         'success'=>false,
-        //         'posts'=>$posts
-        //     ], 204);
-        // }
-
-        // return response()->json([
-        //     'success'=>true,
-        //     'posts'=>$posts
-        // ], 200);
     }
 
     /**
@@ -40,25 +28,11 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
-        $validated = $request->validate([
-            "title" => "required|min:3|max:20",
-            "content" => "required|min:3|max:255",
-        ]);
+        $addPost = Posts::create($request->validated());
 
-        $addPost = Posts::create($validated);
-        if (!$addPost) {
-            return response()->json([
-                'success'=>false,
-                'message'=>'Failed to add post'
-            ], 204);
-        }
-
-        return response()->json([
-            'success'=>false,
-            'message'=>'Post added'
-        ], 200);
+        return new PostResource($addPost);
     }
 
     /**
@@ -66,10 +40,7 @@ class PostController extends Controller
      */
     public function show(Posts $post)
     {
-        return response()->json([
-            "success" => true,
-            "post" => $post,
-          ], 200);
+        return new PostResource($post);
     }
 
     /**
@@ -83,20 +54,12 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Posts $post)
+    public function update(PostRequest $request, Posts $post)
     {
-        $validated = $request->validate([
-            "title" => "required|min:3|max:20",
-            "content" => "required|min:3|max:255",
-          ]);
       
-          $post->update($validated);
-      
-          return response()->json([
-            "success" => true,
-            "message" => "Post updated",
-            "post" => $post
-          ]);
+        $post->update($request->validated());
+
+        return new PostResource($post);  
     }
 
     /**
@@ -104,17 +67,8 @@ class PostController extends Controller
      */
     public function destroy(Posts $post)
     {
-        if (!$post) {
-            return response()->json([
-                "success" => false,
-                "message" => "Post not found"
-              ], status: 404);
-        }
-
         $post->delete();
-        return response()->json([
-          "success" => true,
-          "message" => "Post deleted"
-        ], 200);
+
+        return response()->json(null, 204);
     }
 }
