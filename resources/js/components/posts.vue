@@ -49,6 +49,9 @@
                                 <input type="checkbox" @change="toggleSelectAll($event)" />
                             </th>
                             <th scope="col" class="px-6 py-3">
+                                File
+                            </th>
+                            <th scope="col" class="px-6 py-3">
                                 Title
                             </th>
                             <th scope="col" class="px-6 py-3">
@@ -69,6 +72,13 @@
                                     :value="post.id" 
                                     v-model="selectedPosts"
                                     @click.stop
+                                />
+                            </td>
+                            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                <img 
+                                    :src="post.file != null ? `/files/${post.file}` : '/files/default.png'" 
+                                    alt="post file" 
+                                    class="w-10 h-10 object-cover rounded-md"
                                 />
                             </td>
                             <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">

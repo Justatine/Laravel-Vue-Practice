@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Posts;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -43,7 +44,17 @@ class PostController extends Controller
         $validated = $request->validate([
             "title" => "required|min:3|max:20",
             "content" => "required|min:3|max:255",
+            "file" => "nullable|file|mimes:jpg,jpeg,png|max:2048",
         ]);
+
+        if ($request->hasFile('file')) {
+            // $filePath = $request->file('file')->store('files','public');
+            $file = request()->file('file');
+            $imageName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('files/'), $imageName);
+
+            $validated['file'] = $imageName;
+        }
 
         $addPost = Posts::create($validated);
         if (!$addPost) {
