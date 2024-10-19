@@ -13,6 +13,7 @@ class Posts extends Model
 
     protected $fillable = [
         'title',
-        'content'
+        'content',
+        'file'
     ];
 }

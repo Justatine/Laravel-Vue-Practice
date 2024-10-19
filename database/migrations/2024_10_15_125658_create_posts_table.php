@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('content');
+            $table->text('file')->nullable();
             $table->timestamps();
         });
 
@@ -23,18 +24,21 @@ return new class extends Migration
             [
                 'title'=>'Post 1',
                 'content'=>'Post 1 content',
+                'file'=> null,
                 'created_at'=>now(),
                 'updated_at' => now()
             ],
             [
                 'title'=>'Post 2',
                 'content'=>'Post 2 content',
+                'file'=> null,
                 'created_at'=>now(),
                 'updated_at' => now()
             ],
             [
                 'title'=>'Post 3',
                 'content'=>'Post 3 content',
+                'file'=> null,
                 'created_at'=>now(),
                 'updated_at' => now()            
             ]
