@@ -102,16 +102,22 @@ class PostController extends Controller
         ]);
       
         if ($request->hasFile('file')) {
-            
-            if ($post->file && file_exists(public_path('files/' . $post->file))) {
-                unlink(public_path('files/' . $post->file));
+            if ($post->file) {
+                $imagePath = public_path('files/'.$post->file);
+
+                if (file_exists($imagePath)) {
+                    unlink($imagePath);
+                }
+
+                $file = request()->file('file');
+                $imageName = time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('files/'), $imageName);
+    
+                $validated['file'] = $imageName;
             }
             
-            $file = request()->file('file');
-            $imageName = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('files/'), $imageName);
-
-            $validated['file'] = $imageName;
+        } else{
+            $validated['file'] = $post->file;
         }
 
         $post->update($validated);

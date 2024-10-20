@@ -1,6 +1,5 @@
 <template>
     <form @submit.prevent="updatePost" class="max-w-sm mx-auto">
-
         <div v-if="successMessage" class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
             <span class="font-medium">{{ successMessage }}</span>
         </div>
@@ -45,9 +44,9 @@
                 required
             ></textarea>
         </div>
+
         <button 
             type="submit" 
-            @click="updatePost"
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
             Submit
@@ -63,6 +62,7 @@ export default {
     name: 'posts',   
     data() {
         return {
+            posts: [],
             model: {
                 post: {
                     id: '',
@@ -74,49 +74,42 @@ export default {
             successMessage: ''
         };
     },
-    mounted(){
-        console.log(this.$route.params.id);
+    mounted() {
         this.getPostData(this.$route.params.id);
     },
     methods: {
-        handleFileUpload(event){
-            this.model.post.file = event.target.files[0]; 
+        handleFileUpload(event) {
+            this.model.post.file = event.target.files[0];
         },
-        async getPostData(id){
+        async getPostData(id) {
             const response = await axios.get(`${url}/${id}`);
-            // console.log(response.data.title); 
-            
+            console.log(response.data.post)
             this.model.post.title = response.data.post.title;
             this.model.post.content = response.data.post.content;
-            this.model.post.id  = this.$route.params.id;
-
+            this.model.post.id = id;
         },
-        async updatePost(){
+        async updatePost() {
             try {
+                const id = this.$route.params.id;
+
                 let formData = new FormData();
                 formData.append('title', this.model.post.title);
                 formData.append('content', this.model.post.content);
+                
                 if (this.model.post.file) {
-                    formData.append('file', this.model.post.file); 
+                    formData.append('file', this.model.post.file);
                 }
 
-                const id = this.$route.params.id;
-                const response = await axios.put(`${url}/${id}`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
+                const response = await axios.post(`${url}/${id}?_method=PUT`, formData);
 
                 this.successMessage = response.data.message;
-                this.model.post = { title: '', content: '', file: null }; 
-
                 setTimeout(() => {
                     this.successMessage = '';
                     window.location.href = `/posts/${id}/view`;
                 }, 3000);
-                
+
             } catch (error) {
-                console.error('Error creating post:', error);
+                console.error('Error updating post:', error);
             }
         }
     }
