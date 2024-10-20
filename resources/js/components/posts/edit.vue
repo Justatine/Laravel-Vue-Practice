@@ -11,6 +11,17 @@
                 <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Back</button>
             </router-link>
         </div>
+
+        <div class="mb-5">
+            <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file">Upload file</label>
+            <input 
+                type="file"
+                id="file"
+                @change="handleFileUpload"
+                class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+            />
+        </div>
+
         <div class="mb-5">
             <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Post Title</label>
             <input 
@@ -22,6 +33,7 @@
                 required 
             />
         </div>
+
         <div class="mb-5">
             <label for="content" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Post Content</label>
             <textarea 
@@ -51,12 +63,12 @@ export default {
     name: 'posts',   
     data() {
         return {
-            posts: [],
             model: {
                 post: {
                     id: '',
                     title: '',
-                    content: ''
+                    content: '',
+                    file: null
                 }
             },
             successMessage: ''
@@ -67,6 +79,9 @@ export default {
         this.getPostData(this.$route.params.id);
     },
     methods: {
+        handleFileUpload(event){
+            this.model.post.file = event.target.files[0]; 
+        },
         async getPostData(id){
             const response = await axios.get(`${url}/${id}`);
             // console.log(response.data.title); 
@@ -78,17 +93,26 @@ export default {
         },
         async updatePost(){
             try {
-                const id = this.$route.params.id;
-                
-                const response = await axios.put(`${url}/${id}`, this.model.post);   
-                this.posts.push(response.data); 
-                this.model.post = { title: '', content: '' };
+                let formData = new FormData();
+                formData.append('title', this.model.post.title);
+                formData.append('content', this.model.post.content);
+                if (this.model.post.file) {
+                    formData.append('file', this.model.post.file); 
+                }
 
-                this.successMessage = response.data.message
+                const id = this.$route.params.id;
+                const response = await axios.put(`${url}/${id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+
+                this.successMessage = response.data.message;
+                this.model.post = { title: '', content: '', file: null }; 
 
                 setTimeout(() => {
                     this.successMessage = '';
-                    window.location.href = `/posts/${id}/edit`;
+                    window.location.href = `/posts/${id}/view`;
                 }, 3000);
                 
             } catch (error) {

@@ -98,15 +98,29 @@ class PostController extends Controller
         $validated = $request->validate([
             "title" => "required|min:3|max:20",
             "content" => "required|min:3|max:255",
-          ]);
+            "file" => "nullable|file|mimes:jpg,jpeg,png|max:2048",
+        ]);
       
-          $post->update($validated);
-      
-          return response()->json([
+        if ($request->hasFile('file')) {
+            
+            if ($post->file && file_exists(public_path('files/' . $post->file))) {
+                unlink(public_path('files/' . $post->file));
+            }
+            
+            $file = request()->file('file');
+            $imageName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('files/'), $imageName);
+
+            $validated['file'] = $imageName;
+        }
+
+        $post->update($validated);
+    
+        return response()->json([
             "success" => true,
             "message" => "Post updated",
             "post" => $post
-          ]);
+        ]);
     }
 
     /**
@@ -121,10 +135,17 @@ class PostController extends Controller
               ], status: 404);
         }
 
-        $post->delete();
-        return response()->json([
-          "success" => true,
-          "message" => "Post deleted"
-        ], 200);
+        if ($post->file) {
+            $imagePath = public_path('files/'.$post->file);
+
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+            $post->delete();
+            return response()->json([
+              "success" => true,
+              "message" => "Post deleted"
+            ], 200);
+        }
     }
 }

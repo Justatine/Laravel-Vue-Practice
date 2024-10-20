@@ -59,7 +59,7 @@ export default {
         };
     },
     mounted(){
-        console.log(this.$route.params.id);
+        // console.log(this.$route.params.id);
         this.getPostData(this.$route.params.id);
     },
     methods: {
@@ -71,25 +71,25 @@ export default {
             this.model.post.content = response.data.post.content;
             this.model.post.id  = this.$route.params.id;
         },
-        async updatePost(){
-            try {
-                const id = this.$route.params.id;
+        // async updatePost(){
+        //     try {
+        //         const id = this.$route.params.id;
                 
-                const response = await axios.put(`${url}/${id}`, this.model.post);   
-                this.posts.push(response.data); 
-                this.model.post = { title: '', content: '' };
+        //         const response = await axios.put(`${url}/${id}`, this.model.post);   
+        //         this.posts.push(response.data); 
+        //         this.model.post = { title: '', content: '' };
 
-                this.successMessage = response.data.message
+        //         this.successMessage = response.data.message
 
-                setTimeout(() => {
-                    this.successMessage = '';
-                    window.location.href = `/posts/${id}/edit`;
-                }, 3000);
+        //         setTimeout(() => {
+        //             this.successMessage = '';
+        //             window.location.href = `/posts/${id}/edit`;
+        //         }, 3000);
                 
-            } catch (error) {
-                console.error('Error creating post:', error);
-            }
-        }
+        //     } catch (error) {
+        //         console.error('Error creating post:', error);
+        //     }
+        // }
     }
 };
 </script>
