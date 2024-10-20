@@ -11,16 +11,13 @@
 </head>
 <body class="h-full flex flex-col">
 
-    {{-- @include('components.header') --}}
     <div id="header"></div>
 
     <div class="container flex-grow p-8">
-        {{-- @yield('content') --}}
         <div id="app"></div>
     </div>
 
     <div id="footer"></div>
-    {{-- @include('components.footer') --}}
 
     @vite('resources/js/app.js')
     <script src="js/auth/auth.js"></script>
