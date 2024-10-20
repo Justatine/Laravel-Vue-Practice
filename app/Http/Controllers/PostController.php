@@ -96,7 +96,7 @@ class PostController extends Controller
     public function update(Request $request, Posts $post)
     {
         $validated = $request->validate([
-            "title" => "required|min:3|max:20",
+            "title" => "required|unique:posts|min:3|max:20",
             "content" => "required|min:3|max:255",
             "file" => "nullable|file|mimes:jpg,jpeg,png|max:2048",
         ]);
