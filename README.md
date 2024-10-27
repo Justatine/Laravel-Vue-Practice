@@ -49,7 +49,7 @@
 ## Vue.js Setup
 - same process but start with this
 - npm create vue@latest
-- cd <your-project-name>
+- cd [your-project-name]
 - npm install
 - npm run dev
 - npm i vue-router@4 vue-axios --save-dev
