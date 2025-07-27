@@ -1,6 +1,7 @@
 ## Create Laravel Project
 
 - composer create-project --prefer-dist laravel/laravel [app_name]
+- composer create-project laravel/laravel:^11.0 my-app (if switch to version)
 - config/app.php -> 'timezone'=> 'Asia/Manila',
 - config/database.php -> 'charset'=> 'utf8', 'collation'=> 'utf8_general_ci',
 - Modify .env -> DB_DATABASE=[db_name]
