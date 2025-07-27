@@ -12,10 +12,12 @@
 - protected $fillable = [
     'attribute'
  ];
-- Config migration
+- Config migration (database/tables)
 - Migrate->php artisan migrate
 - Make resource-> php artisan make:resource [Resource_name]
 - Config resources
+- Make request-> php artisan make:request [Request_name]
+- Config request
 - Make controller-> php artisan make:controller [Controller_name] --resource
 - Install api->php artisan install:api
 - Configure api.php
